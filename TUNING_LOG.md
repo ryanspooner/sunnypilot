@@ -18,7 +18,12 @@ Device params (curve/torque) all default/off. Saved on device: `/data/prius-tune
 - `_POSESTD_THRESHOLD` 0.3 → 0.4 (tolerate noisier head-pose in glare)
 - Values are a first pass — tune to the actual sunglassesProb/faceProb/poseStd seen in Ryan's
   replayed sunglasses+sunset footage; confirm it still catches genuine inattention.
-- Result: _pending replay validation_
+- **Replay validation (5 recent routes, 9.6k+ frames):**
+  - Sunglasses worn 69-93% of every drive. `_SG_THRESHOLD` 0.9→0.5 eliminates the 234-480 frames/drive
+    where old code trusted unseeable eyes → **~0**. Validated, helps every drive. ✅
+  - Glare half (`_FACE_THRESHOLD`/`_POSESTD_THRESHOLD`): no sunset/glare drive in recent recordings
+    (noFace% ~0 everywhere), so unexercised. Conservative (only act when face detection drops in glare);
+    keep, confirm on a real sunset drive. ⚠️ unvalidated.
 
 ## Planned
 - v2: tune `TARGET_LAT_A` (vision_turn_controller.py) + Prius `MAX_LAT_ACCEL`/friction (override.toml)
