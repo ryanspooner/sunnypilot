@@ -29,9 +29,9 @@ class DRIVER_MONITOR_SETTINGS:
     self._DISTRACTED_PRE_TIME_TILL_TERMINAL = 8.
     self._DISTRACTED_PROMPT_TIME_TILL_TERMINAL = 6.
 
-    self._FACE_THRESHOLD = 0.7
+    self._FACE_THRESHOLD = 0.55  # prius-tune v3: was 0.7 -- tolerate sun-glare face washout
     self._EYE_THRESHOLD = 0.65
-    self._SG_THRESHOLD = 0.9
+    self._SG_THRESHOLD = 0.5  # prius-tune v3: was 0.9 -- recognize sunglasses sooner, ignore unseeable eyes
     self._BLINK_THRESHOLD = 0.865
 
     self._EE_THRESH11 = 0.25
@@ -55,7 +55,7 @@ class DRIVER_MONITOR_SETTINGS:
     self._YAW_MAX_OFFSET = 0.289
     self._YAW_MIN_OFFSET = -0.0246
 
-    self._POSESTD_THRESHOLD = 0.3
+    self._POSESTD_THRESHOLD = 0.4  # prius-tune v3: was 0.3 -- tolerate noisier head-pose in glare
     self._HI_STD_FALLBACK_TIME = int(10  / self._DT_DMON)  # fall back to wheel touch if model is uncertain for 10s
     self._DISTRACTED_FILTER_TS = 0.25  # 0.6Hz
     self._ALWAYS_ON_ALERT_MIN_SPEED = 7

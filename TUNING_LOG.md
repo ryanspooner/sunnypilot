@@ -11,7 +11,16 @@ Device params (curve/torque) all default/off. Saved on device: `/data/prius-tune
 - Expected: "curve too tight, take control" stops; car eases speed into curves.
 - Result: _pending batched test drive_
 
+## v3 — DM tolerance for sunglasses / setting sun  (code: helpers.py; DRAFT, validate via replay)
+`selfdrive/monitoring/helpers.py` — keep the old (non-phone) DM, just relax detection:
+- `_SG_THRESHOLD`   0.9 → 0.5   (recognize sunglasses sooner → stop trusting unseeable eyes)
+- `_FACE_THRESHOLD` 0.7 → 0.55  (tolerate sun-glare face washout)
+- `_POSESTD_THRESHOLD` 0.3 → 0.4 (tolerate noisier head-pose in glare)
+- Values are a first pass — tune to the actual sunglassesProb/faceProb/poseStd seen in Ryan's
+  replayed sunglasses+sunset footage; confirm it still catches genuine inattention.
+- Result: _pending replay validation_
+
 ## Planned
 - v2: tune `TARGET_LAT_A` (vision_turn_controller.py) + Prius `MAX_LAT_ACCEL`/friction (override.toml)
-- v3: relax DM thresholds for sunglasses/sun (helpers.py) — keep old DM
+       — set from replayed bad-curve data (torque saturation / lateral accel), not guessed
 - v4: swap in newer driving model (curves + silver cars), verify modeld compatibility
