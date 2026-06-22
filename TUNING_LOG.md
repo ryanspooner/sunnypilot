@@ -25,7 +25,19 @@ Device params (curve/torque) all default/off. Saved on device: `/data/prius-tune
     (noFace% ~0 everywhere), so unexercised. Conservative (only act when face detection drops in glare);
     keep, confirm on a real sunset drive. ⚠️ unvalidated.
 
+## v2 — curve target lowered to the Prius's real limit  (code: vision_turn_controller.py)
+**Data (replay, 5 routes ~50k lat frames):** when the torque controller SATURATES, desired lateral
+accel = **~1.6 m/s² median (1.72 avg)** — i.e. the Prius EPS runs out of steering ~1.6 m/s²
+(matches static `MAX_LAT_ACCEL_MEASURED=1.502`). No EPS hardware faults seen → "take control" is
+openpilot hitting that ceiling.
+**Insight:** Vision Turn Control's `TARGET_LAT_A` was **1.9** > the car's ~1.6 ceiling, so even with
+v1 on, it aimed too high and would still bail on tight curves.
+**Change:** `TARGET_LAT_A` 1.9 → **1.5** (just under measured ceiling) → slows enough to stay below
+saturation. Pairs with v1 (vision turn control enabled).
+- Did NOT raise MAX_LAT_ACCEL/torque: saturation reflects the real EPS torque cap; respect it by
+  slowing, don't pretend the car can pull more.
+- Result: _pending test drive (this changes speed/closed-loop, so replay can't fully simulate it)_
+
 ## Planned
-- v2: tune `TARGET_LAT_A` (vision_turn_controller.py) + Prius `MAX_LAT_ACCEL`/friction (override.toml)
-       — set from replayed bad-curve data (torque saturation / lateral accel), not guessed
 - v4: swap in newer driving model (curves + silver cars), verify modeld compatibility
+- (maybe) refine TARGET_LAT_A 1.4-1.6 on the drive for feel vs margin
