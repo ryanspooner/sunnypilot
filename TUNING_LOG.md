@@ -38,6 +38,19 @@ saturation. Pairs with v1 (vision turn control enabled).
   slowing, don't pretend the car can pull more.
 - Result: _pending test drive (this changes speed/closed-loop, so replay can't fully simulate it)_
 
-## Planned
-- v4: swap in newer driving model (curves + silver cars), verify modeld compatibility
+## v4 — NNLC (neural-net steering) ENABLED  (device param)
+`NNFF = 1`. Replaces the generic linear torque controller with a **per-car neural-net feedforward**
+trained on Prius EPS data. Verified: matched `lat_models/TOYOTA_PRIUS.json`, **similarity 1.0** (exact),
+FluxModel loads OK. Engages at next ignition (reads `NNFF` at car init).
+- Why: biggest steering-quality upgrade for Toyotas; smoother/more precise, and **holds curves with less
+  torque → less saturation → less bailing** (stacks with v1/v2's slow-for-curves).
+- Closed-loop change → only a real drive confirms feel. Reversible: `NNFF=0`.
+- Result: _pending test drive_
+
+## Deployed build = "full" + NNLC  (v1 params + v2 + v3 code + v4 NNLC param)
+All active on next drive. Reverts: see README profile-switching.
+
+## Planned / future
+- v5 (deferred, risky): swap in newer driving model (silver cars), needs road-side modeld port
 - (maybe) refine TARGET_LAT_A 1.4-1.6 on the drive for feel vs margin
+- after a drive: pull logs, check NN engaged + curve/DM behavior, retune
